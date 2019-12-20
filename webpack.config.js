@@ -1,17 +1,17 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 module.exports = {
   entry: './index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'main.bundle.js',
+    filename: 'main.bundle.js'
   },
   watch: NODE_ENV === 'development',
   watchOptions: {
-    aggregateTimeout: 300,
+    aggregateTimeout: 300
   },
   module: {
     rules: [
@@ -25,20 +25,20 @@ module.exports = {
             plugins: ['@babel/plugin-transform-runtime', [
               '@babel/plugin-proposal-decorators',
               {
-                'legacy': true
+                legacy: true
               }
-            ], '@babel/plugin-proposal-class-properties'],
-          },
-        },
+            ], '@babel/plugin-proposal-class-properties']
+          }
+        }
       },
       {
         test: /\.css$/,
         use: [
           {
-            loader: "style-loader"
+            loader: 'style-loader'
           },
           {
-            loader: "css-loader",
+            loader: 'css-loader'
           }
         ]
       },
@@ -46,25 +46,26 @@ module.exports = {
         test: /\.less$/,
         use: [
           {
-            loader: "style-loader"
+            loader: 'style-loader'
           },
           {
-            loader: "css-loader",
+            loader: 'css-loader'
           },
           {
-            loader: "less-loader"
+            loader: 'less-loader'
           }
         ]
       },
       {
         test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
-        loader: 'url-loader?limit=100000' },
-    ],
+        loader: 'url-loader?limit=100000'
+      }
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(NODE_ENV),
-    }),
+      NODE_ENV: JSON.stringify(NODE_ENV)
+    })
   ],
   mode: NODE_ENV,
   devServer: {
@@ -73,4 +74,4 @@ module.exports = {
     liveReload: true,
     historyApiFallback: true
   }
-};
+}
