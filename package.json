@@ -55,7 +55,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run eslint && npm run build"
+      "pre-commit": "npm run eslint"
     }
   },
   "author": "0riac",
