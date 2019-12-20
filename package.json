@@ -54,7 +54,9 @@
     "eslint": "npx eslint ./src/**/*.js"
   },
   "husky": {
-    "pre-commit": "npm run eslint && npm run build"
+    "hooks": {
+      "pre-commit": "npm run eslint && npm run build"
+    }
   },
   "author": "0riac",
   "license": "ISC"
