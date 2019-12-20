@@ -1,4 +1,4 @@
-import { action, observable, reaction, computed, set, get } from 'mobx'
+import { action, observable, reaction, computed, set } from 'mobx'
 import { POKEAPI, API } from '../_helpers/constants'
 import axios from 'axios/index'
 import { asyncForEachAll } from '../_helpers'
@@ -8,17 +8,15 @@ export default class UserStore {
     reaction(() => ({}), async () => {
       try {
         const { data } = await axios.get(`${API}user`, { withCredentials: true })
-        const user = data
-        this.setUser(user)
+        this.setUser(data)
       } catch (e) { }
     }, { fireImmediately: true })
 
     reaction(() => this.user, async (data) => {
       try {
         let { favoritePokemons, params: { offset, limit } } = data
-        set(this.params, 'pokemonCount', favoritePokemons.length)
+        this.params.pokemonCount = favoritePokemons.length
         favoritePokemons = favoritePokemons.slice(offset, limit + offset)
-        favoritePokemons = favoritePokemons.filter((item, pos, arr) => !arr.slice(pos + 1).find((findItem) => +item === +findItem))
         let pokemonArray = await asyncForEachAll(favoritePokemons, async (item) => {
           try {
             return (await axios.get(`${POKEAPI}pokemon/${item}`)).data
@@ -53,11 +51,11 @@ export default class UserStore {
   @observable pokemonArray = []
 
   @action setUser = (user) => {
-    set(this.params, 'isAuthorized', true)
-    set(this.params, 'id', user._id)
-    set(this.params, 'firstName', user.firstName)
-    set(this.params, 'lastName', user.lastName)
-    set(this.favoritePokemons, user.pokemons)
+    this.params.isAuthorized = true
+    this.params.id = user._id
+    this.params.firstName = user.firstName
+    this.params.lastName = user.lastName
+    this.favoritePokemons = user.pokemons
   }
 
   @action unsetUser = () => {
@@ -71,42 +69,42 @@ export default class UserStore {
       pokemonCount: 0
     }
     set(this, 'params', params)
-    set(this, 'favoritePokemons', [])
+    this.favoritePokemons = []
   }
 
   @action next = () => {
-    set(this.params, 'offset', this.params.offset + this.params.limit)
+    this.params.offset = this.params.offset + this.params.limit
   }
 
   @action back = () => {
-    set(this.params, 'offset', Math.max(this.params.offset - this.params.limit, 0))
+    this.params.offset = Math.max(this.params.offset - this.params.limit, 0)
   }
 
   @action clearOffset = () => {
-    set(this.params, 'offset', 0)
+    this.params.offset = 0
   }
 
   @action changeLimit = (limit) => {
     this.clearOffset()
-    set(this.params, 'limit', limit)
+    this.params.limit = limit
   }
 
   @action logout = () => {
-    set(this.logoutFlag, 'flag', !this.logoutFlag.flag)
+    this.logoutFlag.flag = !this.logoutFlag.flag
   }
 
   @computed get logoutComputed () {
     return {
-      logoutFlag: get(this.logoutFlag, 'flag')
+      logoutFlag: this.logoutFlag.flag
     }
   }
 
   @computed get user () {
     return {
       params: {
-        id: get(this.params, 'id'),
-        limit: get(this.params, 'limit'),
-        offset: get(this.params, 'offset')
+        id: this.params.id,
+        limit: this.params.limit,
+        offset: this.params.offset
       },
       favoritePokemons: [...this.favoritePokemons]
     }

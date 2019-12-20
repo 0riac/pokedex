@@ -19,6 +19,7 @@
     "css-loader": "^3.3.2",
     "formsy-react": "^1.1.5",
     "history": "^4.10.1",
+    "husky": "^3.1.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mobx": "^5.15.1",
@@ -51,6 +52,9 @@
     "start": "cross-env NODE_ENV=development webpack",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
     "eslint": "npx eslint ./src/**/*.js"
+  },
+  "husky": {
+    "pre-commit": "npm run eslint && npm run build"
   },
   "author": "0riac",
   "license": "ISC"

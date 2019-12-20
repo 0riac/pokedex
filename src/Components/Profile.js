@@ -139,7 +139,7 @@ class Profile extends Component {
                 <Grid item>
                   <Button
                     size={'large'}
-                    disabled={pokemonCount < offset + limit}
+                    disabled={pokemonCount <= offset + limit}
                     onClick={() => next()}
                   >
                     Next

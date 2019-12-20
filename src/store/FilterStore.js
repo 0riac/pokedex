@@ -1,4 +1,4 @@
-import { action, observable, reaction, computed, set, get } from 'mobx'
+import { action, observable, reaction, computed } from 'mobx'
 import { POKEAPI } from '../_helpers/constants'
 import axios from 'axios/index'
 import { asyncForEachAll } from '../_helpers'
@@ -14,11 +14,11 @@ export default class FilterStore {
             const { data } = await axios.get(`${POKEAPI}pokemon/${params.search}`)
             const pokemon = data
             const pokemonArray = pokemon ? [pokemon] : []
-            set(this.params, 'pokemonCount', pokemonArray.length)
+            this.params.pokemonCount = pokemonArray.length
             this.pokemonArray = pokemonArray
           } catch (e) {
             const pokemonArray = []
-            set(this.params, 'pokemonCount', pokemonArray.length)
+            this.params.pokemonCount = pokemonArray.length
             this.pokemonArray = pokemonArray
           }
         } else if (pokeTypes && pokeTypes.length) {
@@ -33,7 +33,7 @@ export default class FilterStore {
           })
           pokemonByTypeArray = pokemonByTypeArray.map((item) => item.value.pokemon)
           let pokemonList = pokemonByTypeArray.reduce((a, b) => [...a, ...b], [])
-          set(this.params, 'pokemonCount', pokemonList.length)
+          this.params.pokemonCount = pokemonList.length
           pokemonList = pokemonList.slice(offset, offset + limit)
           const pokemonArray = await asyncForEachAll(pokemonList, async (item) => {
             try {
@@ -43,7 +43,7 @@ export default class FilterStore {
           this.pokemonArray = pokemonArray.map((item) => item.value).sort((a, b) => +a.id - +b.id)
         } else {
           const { data } = await axios.get(`${POKEAPI}pokemon`, { params: { offset, limit } })
-          set(this.params, 'pokemonCount', data.count)
+          this.params.pokemonCount = data.count
           const pokemonList = data.results
 
           const pokemonArray = await asyncForEachAll(pokemonList, async (item) => {
@@ -81,40 +81,39 @@ export default class FilterStore {
   }
 
   @action clearOffset = () => {
-    set(this.params, 'offset', 0)
+    this.params.offset = 0
   }
 
   @action clearSearch = () => {
-    set(this.params, 'search', '')
+    this.params.search = ''
   }
 
   @action changeSearch = (search) => {
     this.clearOffset()
-    set(this.params, 'search', search)
+    this.params.search = search
   }
 
   @action changeLimit = (limit) => {
     this.clearOffset()
-    set(this.params, 'limit', limit)
+    this.params.limit = limit
   }
 
   @action next = () => {
-    set(this.params, 'offset', this.params.offset + this.params.limit)
+    this.params.offset = this.params.offset + this.params.limit
   }
 
   @action back = () => {
-    set(this.params, 'offset', Math.max(this.params.offset - this.params.limit, 0))
+    this.params.offset = Math.max(this.params.offset - this.params.limit, 0)
   }
 
   @computed get data () {
     return {
       params: {
-        limit: get(this.params, 'limit'),
-        offset: get(this.params, 'offset'),
-        search: get(this.params, 'search')
+        limit: this.params.limit,
+        offset: this.params.offset,
+        search: this.params.search
       },
       pokeTypes: [...this.pokeTypes]
-
     }
   }
 }
