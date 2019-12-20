@@ -18,6 +18,7 @@ export default class UserStore {
         let { favoritePokemons, params: { offset, limit } } = data
         set(this.params, 'pokemonCount', favoritePokemons.length)
         favoritePokemons = favoritePokemons.slice(offset, limit + offset)
+        favoritePokemons = favoritePokemons.filter((item, pos) => favoritePokemons.indexOf(item) === pos)
         let pokemonArray = await asyncForEachAll(favoritePokemons, async (item) => {
           try {
             return (await axios.get(`${POKEAPI}pokemon/${item}`)).data
