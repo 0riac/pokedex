@@ -6,7 +6,7 @@ import { Router } from 'react-router'
 import AppWrapper from './src'
 import mainStore from './src/store'
 
-const browserHistory = createBrowserHistory()
+const browserHistory = createBrowserHistory({ basename: '/pokedex' })
 const routingStore = new RouterStore()
 
 const stores = {
